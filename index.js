@@ -25,6 +25,21 @@ async function run() {
         await client.connect();
 
         const userCollection = client.db('equipmentDB').collection('users');
+        const equipmentCollection = client.db('equipmentDB').collection('equipments');
+
+        app.get('/equipments', async(req, res) => {
+            const cursor = equipmentCollection.find();
+            const result = await cursor.toArray();
+            res.send(result);
+        })
+
+        app.post('/equipments', async (req, res) => {
+            const newEquipment = req.body;
+            console.log(newEquipment);
+            const result = await equipmentCollection.insertOne(newEquipment);
+            res.send(result);
+        })
+
 
         app.get('/users', async (req, res) => {
             const cursor = userCollection.find();
