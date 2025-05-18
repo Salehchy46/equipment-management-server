@@ -40,8 +40,32 @@ async function run() {
             res.send(result);
         })
 
+        app.put('/equipment/:id', async(req, res) => {
+            const id = req.params.id;
+            const filter = {_id: new ObjectId(id)};
+            const option = {
+                upsert: true,
+            }
+            const updateEquipment = req.body;
+            const equipment = {
+                $set: {
+                    name: updateEquipment.name,
+                    image: updateEquipment.image,
+                    category: updateEquipment.category,
+                    description: updateEquipment.description,
+                    price: updateEquipment.price,
+                    rating: updateEquipment.rating,
+                    customization: updateEquipment.customization,
+                    delivery: updateEquipment.delivery,
+                    stock: updateEquipment.stock,
+                }
+            }
+        })
+
         app.delete('/equipments/:id', async(req, res) => {
             const id = req.params.id;
+            console.log('deleted', id);
+            
             const query = { _id: new ObjectId(id) };
             const result = await equipmentCollection.deleteOne(query);
             res.send(result);
