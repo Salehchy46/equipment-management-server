@@ -27,11 +27,27 @@ async function run() {
         const userCollection = client.db('equipmentDB').collection('users');
         const equipmentCollection = client.db('equipmentDB').collection('equipments');
 
-        app.get('/equipments', async(req, res) => {
+        app.get('/equipments', async (req, res) => {
             const cursor = equipmentCollection.find();
             const result = await cursor.toArray();
             res.send(result);
         })
+
+        app.get('/equipments/:id', async (req, res) => {
+            const equip = req.params.id;
+            console.log(equip);
+
+            const cursor = await equipmentCollection.findOne({ _id: new ObjectId(equip) });
+            // const result = await cursor.toArray();
+            console.log(cursor);
+
+            res.send(cursor);
+        })
+
+        // app.get('/equipments/:id', async (req, res) => { 
+        //     const singleProd = req.params.id;
+        //     console.log(singleProd)
+        // })
 
         app.post('/equipments', async (req, res) => {
             const newEquipment = req.body;
@@ -40,9 +56,11 @@ async function run() {
             res.send(result);
         })
 
-        app.put('/equipment/:id', async(req, res) => {
+
+
+        app.put('/equipments/:id', async (req, res) => {
             const id = req.params.id;
-            const filter = {_id: new ObjectId(id)};
+            const filter = { _id: new ObjectId(id) };
             const option = {
                 upsert: true,
             }
@@ -60,12 +78,14 @@ async function run() {
                     stock: updateEquipment.stock,
                 }
             }
+            const result = await equipmentCollection.updateOne(filter, option, equipment);
+            res.send(result);
         })
 
-        app.delete('/equipments/:id', async(req, res) => {
+        app.delete('/equipments/:id', async (req, res) => {
             const id = req.params.id;
             console.log('deleted', id);
-            
+
             const query = { _id: new ObjectId(id) };
             const result = await equipmentCollection.deleteOne(query);
             res.send(result);
@@ -76,6 +96,12 @@ async function run() {
             const cursor = userCollection.find();
             const result = await cursor.toArray();
             res.send(result);
+        })
+
+        app.get('/users/:id', async(req, res) => {
+            const cursor = await userCollection.findOne();
+            console.log(cursor);
+            res.send(cursor);
         })
 
         app.post('/users', async (req, res) => {
@@ -89,8 +115,8 @@ async function run() {
             const email = req.body.email;
             const filter = { email };
             const updateDoc = {
-                $set : {
-                    lastSignInTime : req.body?.lastSignInTime,
+                $set: {
+                    lastSignInTime: req.body?.lastSignInTime,
                 }
             }
             const result = await userCollection.updateOne(filter, updateDoc);
