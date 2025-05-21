@@ -104,6 +104,12 @@ async function run() {
             res.send(cursor);
         })
 
+        // app.get('/users/header/:id', async(req, res) => {
+        //     const user = await userCollection.findOne();
+        //     console.log(user);
+        //     res.send(user);
+        // })
+
         app.post('/users', async (req, res) => {
             const newUser = req.body;
             console.log('New User', newUser);
