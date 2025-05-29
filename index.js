@@ -98,17 +98,22 @@ async function run() {
             res.send(result);
         })
 
-        app.get('/users/:id', async(req, res) => {
-            const cursor = await userCollection.findOne();
+        app.get('/users/:id', async (req, res) => {
+            const id = req.params.id;
+            
+            const query = { _id : new ObjectId(id)}
+            // console.log(query);
+            
+            const cursor = await userCollection.find({id});
             console.log(cursor);
             res.send(cursor);
         })
 
-        app.get('/users/header/:id', async(req, res) => {
-            const user = await userCollection.findOne();
-            console.log(user);
-            res.send(user);
-        })
+        // app.get('/users/header/:id', async (req, res) => {
+        //     const user = await userCollection.findOne();
+        //     console.log(user);
+        //     res.send(user);
+        // })
 
         app.post('/users', async (req, res) => {
             const newUser = req.body;
